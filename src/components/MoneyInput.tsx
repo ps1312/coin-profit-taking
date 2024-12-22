@@ -1,28 +1,7 @@
 import { useState } from "react"
+import { formatStringToValue } from "../utils"
 
 export type ChangeHandler = (name: string, value: number) => void
-
-export const formatValue = (val: string) => {
-  // Remove all non-digit characters except decimal point
-  let number = val.replace(/[^\d.]/g, "")
-
-  // Ensure only one decimal point
-  const parts = number.split(".")
-  if (parts.length > 2) {
-    number = parts[0] + "." + parts.slice(1).join("")
-  }
-
-  // Add commas for thousands
-  const integerPart = parts[0]
-  const decimalPart = parts[1] || ""
-
-  if (integerPart) {
-    const formatted = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    return decimalPart ? `${formatted}.${decimalPart}` : formatted
-  }
-
-  return number
-}
 
 const MoneyInput = ({
   name,
@@ -35,7 +14,7 @@ const MoneyInput = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9.]/g, "")
-    const formattedValue = formatValue(rawValue)
+    const formattedValue = formatStringToValue(rawValue)
     setDisplayValue(formattedValue)
 
     // Convert to number for onChange handler
