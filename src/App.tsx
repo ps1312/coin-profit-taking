@@ -11,7 +11,7 @@ import {
   LineChart,
   Line,
 } from "recharts"
-import MoneyInput, { ChangeHandler, formatValue } from "./MoneyInput"
+import MoneyInput, { ChangeHandler } from "./MoneyInput"
 import { CRTTerminal } from "./CRTTerminal"
 
 interface Milestone {
