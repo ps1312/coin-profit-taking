@@ -311,8 +311,8 @@ const App = () => {
                             ${milestone.realizedProfit.toLocaleString()}
                           </span>
                         </p>
-                        <p className="flex items-center gap-2 text-gray-300">
-                          Total Realized Profit:{" "}
+                        <p className="flex items-center gap-1 text-gray-300">
+                          Total Realized Profit:
                           <CRTTerminal>
                             $
                             {milestone.cumulativeRealizedProfit.toLocaleString()}
