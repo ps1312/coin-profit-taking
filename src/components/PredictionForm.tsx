@@ -1,8 +1,9 @@
+import { CoinPrediction } from "../types"
 import MoneyInput from "./MoneyInput"
 import { ChangeHandler } from "./MoneyInput"
 
 interface PredictionFormProps {
-  predictionName: string
+  prediction: CoinPrediction
   initialCoins: number
   currentValue: number
   onCoinDataChange: ChangeHandler
@@ -10,7 +11,7 @@ interface PredictionFormProps {
 }
 
 export const PredictionForm = ({
-  predictionName,
+  prediction,
   initialCoins,
   currentValue,
   onCoinDataChange,
@@ -19,7 +20,7 @@ export const PredictionForm = ({
   return (
     <div className="space-y-4 mb-6">
       <h2 className="text-2xl font-bold text-gray-100">
-        {predictionName} - Profit-Taking Strategy
+        {prediction.name} - Profit-Taking Strategy
       </h2>
 
       <div className="grid grid-cols-2 gap-4">
@@ -27,13 +28,21 @@ export const PredictionForm = ({
           <label className="block text-sm font-medium text-gray-300">
             Coin Price ($)
           </label>
-          <MoneyInput name="price" onChange={onCoinDataChange} />
+          <MoneyInput
+            name="price"
+            value={prediction.coinData.price}
+            onChange={onCoinDataChange}
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300">
             Coin Market Cap ($)
           </label>
-          <MoneyInput name="marketCap" onChange={onCoinDataChange} />
+          <MoneyInput
+            name="marketCap"
+            value={prediction.coinData.marketCap}
+            onChange={onCoinDataChange}
+          />
         </div>
       </div>
 
@@ -42,13 +51,21 @@ export const PredictionForm = ({
           <label className="block text-sm font-medium text-gray-300">
             Investment ($)
           </label>
-          <MoneyInput name="total" onChange={onHoldingsDataChange} />
+          <MoneyInput
+            name="total"
+            value={prediction.holdingsData.total}
+            onChange={onHoldingsDataChange}
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300">
             Average Coin Price ($)
           </label>
-          <MoneyInput name="avgPrice" onChange={onHoldingsDataChange} />
+          <MoneyInput
+            name="avgPrice"
+            value={prediction.holdingsData.avgPrice}
+            onChange={onHoldingsDataChange}
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300">

@@ -1,16 +1,26 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { formatStringToValue } from "../utils"
 
 export type ChangeHandler = (name: string, value: number) => void
 
 const MoneyInput = ({
   name,
+  value,
   onChange,
 }: {
   name: string
+  value?: string
   onChange: ChangeHandler
 }) => {
   const [displayValue, setDisplayValue] = useState("")
+
+  // Update internal state when external value changes
+  useEffect(() => {
+    if (value !== undefined) {
+      const formattedValue = formatStringToValue(value.toString())
+      setDisplayValue(formattedValue)
+    }
+  }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9.]/g, "")
@@ -43,7 +53,7 @@ const MoneyInput = ({
         value={displayValue}
         onChange={handleChange}
         onBlur={handleBlur}
-        placeholder="0.0"
+        placeholder="0.00"
       />
     </div>
   )
