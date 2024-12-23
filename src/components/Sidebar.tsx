@@ -16,7 +16,7 @@ export const Sidebar = ({
   onSelectPrediction,
 }: SidebarProps) => {
   return (
-    <div className="w-64 h-full bg-gray-800 p-4 border-r border-gray-700">
+    <div className="w-64 bg-gray-800 ml-2 p-4 rounded border border-gray-700 absolute left-0">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Predictions</h2>
         <button
