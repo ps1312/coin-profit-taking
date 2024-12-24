@@ -3,9 +3,9 @@ import { convertToFloat, formatStringToValue } from "../utils"
 
 interface AddTargetFormProps {
   onSubmit: (e: React.FormEvent) => void
-  onMarketCapChange: (name: string, value: number) => void
-  profitPercent: string
-  onProfitPercentChange: (value: string) => void
+  onMarketCapChange: (value: number) => void
+  profitPercent: number
+  onProfitPercentChange: (value: number) => void
 }
 
 export const AddTargetForm = ({
@@ -14,11 +14,18 @@ export const AddTargetForm = ({
   profitPercent,
   onProfitPercentChange,
 }: AddTargetFormProps) => {
-  const [targetMarketCap, setNewTargetMarketCap] = useState("")
+  const [addTargetForm, setAddTargetForm] = useState({
+    targetMarketCap: "",
+    profitPercent: "",
+  })
 
   const handleMarketCapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onMarketCapChange(e.target.name, convertToFloat(e.target.value))
-    setNewTargetMarketCap(`$ ${formatStringToValue(e.target.value)}`)
+    onMarketCapChange(convertToFloat(e.target.value))
+
+    setAddTargetForm({
+      ...addTargetForm,
+      targetMarketCap: `$ ${formatStringToValue(e.target.value)}`,
+    })
   }
 
   return (
@@ -34,9 +41,9 @@ export const AddTargetForm = ({
           </label>
 
           <input
-            name="newMarketCap"
+            name="targetMarketCap"
             type="text"
-            value={targetMarketCap}
+            value={addTargetForm.targetMarketCap}
             className="mt-1 block w-full rounded-md border bg-gray-800 border-gray-300 p-2"
             onChange={handleMarketCapChange}
             placeholder="$ 0.00"
@@ -51,9 +58,11 @@ export const AddTargetForm = ({
             type="number"
             step="1"
             className="mt-1 block w-48 rounded-md border border-gray-700 bg-gray-700 p-2 text-gray-100"
-            placeholder="e.g. 20"
+            placeholder="[0, 100]"
+            min={0}
+            max={100}
             value={profitPercent}
-            onChange={(e) => onProfitPercentChange(e.target.value)}
+            onChange={(e) => onProfitPercentChange(parseInt(e.target.value))}
           />
         </div>
 

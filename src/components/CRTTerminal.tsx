@@ -18,7 +18,6 @@ export const CRTTerminal = ({ children, color = "#39ff14" }: any) => {
         fontSize: "1.1rem",
         color: color,
         textShadow: `0 0 5px ${color}, 0 0 10px ${color}`,
-        animation: "flicker 0.15s infinite",
       }}
     >
       {children}

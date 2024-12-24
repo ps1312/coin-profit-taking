@@ -1,30 +1,26 @@
 export interface Milestone {
-  name: string;
-  marketCap: number;
-  price: number;
-  portfolioValue: number;
-  holdingPercentage: number;
-  action: string;
-  realizedProfit: number;
-  cumulativeRealizedProfit: number;
-  unrealizedProfit: number;
+  multiplier: number
+  holdings: number
+  profit: number
+  profitPercent: number
+  marketCap: number
 }
 
 export type FormatOptions = {
-  decimals?: number;
-  currency?: boolean;
-};
+  decimals?: number
+  currency?: boolean
+}
 
 export interface CoinPrediction {
-  id: string;
-  name: string;
+  id: string
+  name: string
   coinData: {
-    price: string;
-    marketCap: string;
-  };
+    price: string
+    marketCap: string
+  }
   holdingsData: {
-    total: string;
-    avgPrice: string;
-  };
-  customTargets: Milestone[];
+    total: string
+    avgPrice: string
+  }
+  customTargets: Milestone[]
 }

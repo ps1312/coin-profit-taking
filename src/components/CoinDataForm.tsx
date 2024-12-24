@@ -1,26 +1,23 @@
 import { useState } from "react"
 import { CoinPrediction } from "../types"
-import { ChangeHandler } from "./MoneyInput"
 import { convertToFloat, formatStringToValue } from "../utils"
 
 interface PredictionFormProps {
   prediction: CoinPrediction
-  initialCoins: number
-  currentValue: number
-  onChange: ChangeHandler
+  onChange: (name: "holdings" | "marketCap", value: number) => void
 }
 
-export const PredictionForm = ({
-  prediction,
-  onChange,
-}: PredictionFormProps) => {
+export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
   const [predictionForm, setPredictionForm] = useState({
-    portfolioValue: "",
+    holdings: "",
     marketCap: "",
   })
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name !== "holdings" && e.target.name !== "marketCap") return
+
     onChange(e.target.name, convertToFloat(e.target.value))
+
     setPredictionForm((prev) => ({
       ...prev,
       [e.target.name]: `$ ${formatStringToValue(e.target.value)}`,
@@ -40,9 +37,9 @@ export const PredictionForm = ({
           </label>
 
           <input
-            name="portfolioValue"
+            name="holdings"
             type="text"
-            value={predictionForm.portfolioValue}
+            value={predictionForm.holdings}
             className="mt-1 block w-full rounded-md border bg-gray-800 border-gray-300 p-2"
             onChange={handleFormChange}
             placeholder="$ 0.00"
