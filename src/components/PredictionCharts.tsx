@@ -42,7 +42,7 @@ export const PredictionCharts = ({ data }: PredictionChartsProps) => {
         </ResponsiveContainer>
       </div>
 
-      <div className="h-80">
+      {/* <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -64,7 +64,7 @@ export const PredictionCharts = ({ data }: PredictionChartsProps) => {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -16,7 +16,7 @@ export const MilestoneList = ({
       {milestones.map((milestone, index) => (
         <div
           key={index}
-          className="p-4 border border-gray-700 rounded bg-gray-800"
+          className="p-2 border border-gray-700 rounded bg-gray-800"
         >
           {index > 0 && (
             <p className="font-bold text-2xl text-gray-100">
@@ -24,17 +24,20 @@ export const MilestoneList = ({
             </p>
           )}
 
-          <p className="font-medium text-gray-200">
-            At ${formatLargeNumber(milestone.marketCap)} Market Cap ($
-            {milestone.price.toFixed(4)} per coin):
+          <p className="text-lg font-medium text-gray-300">
+            At{" "}
+            <span className="underline">
+              ${formatLargeNumber(milestone.marketCap)}
+            </span>{" "}
+            Market Cap
           </p>
           <p className="text-gray-300">
             Holdings Value: ${milestone.portfolioValue.toLocaleString()}
           </p>
-          <p className="text-gray-300">Action: {milestone.action}</p>
           <p className="text-gray-300">
             Remaining Holdings: {milestone.holdingPercentage}%
           </p>
+          <p className="text-gray-300">Action: {milestone.action}</p>
 
           {milestone.realizedProfit > 0 && (
             <>
