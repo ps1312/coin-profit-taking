@@ -68,27 +68,6 @@ const App = () => {
     localStorage.setItem("milestones", JSON.stringify(milestones))
   }, [milestones])
 
-  useEffect(() => {
-    // ask if its ok to reset the milestones state
-    if (milestones.length > 1) {
-      const reset = window.confirm(
-        "Changing the coin data will reset the profit-taking strategy. Do you want to proceed?"
-      )
-
-      if (reset) {
-        setMilestones([
-          {
-            multiplier: 1,
-            holdings: coinDataForm.holdings,
-            profit: 0,
-            profitPercent: 0,
-            marketCap: coinDataForm.marketCap,
-          },
-        ])
-      }
-    }
-  }, [coinDataForm])
-
   const sortedTargets = milestones.sort((a, b) => a.marketCap - b.marketCap)
 
   const handleAddPrediction = () => {
@@ -133,6 +112,7 @@ const App = () => {
     }
 
     setMilestones([...milestones, newMilestone])
+    setNewTarget({ marketCap: 0, profitPercent: 0 })
   }
 
   const handleRemoveTarget = (index: number) => {
@@ -155,7 +135,7 @@ const App = () => {
   const prediction = predictions.find((p) => p.id === activePredictionId)!
 
   return (
-    <div className="w-screen p-4 bg-gray-900 text-gray-100 min-h-screen">
+    <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
       <div className="flex">
         <Sidebar
           predictions={predictions}
@@ -173,14 +153,13 @@ const App = () => {
           />
 
           <div className="flex gap-8">
-            <PredictionCharts data={sortedTargets} />
-
             <div className="w-1/2 space-y-2">
-              <h3 className="text-xl font-bold mb-4 text-gray-100">
+              <h3 className="text-xl font-bold mb-2 text-gray-100">
                 Profit-Taking Strategy:
               </h3>
 
               <MilestoneList
+                initialMarketCap={coinDataForm.marketCap}
                 milestones={sortedTargets}
                 onRemoveTarget={handleRemoveTarget}
               />
@@ -196,6 +175,8 @@ const App = () => {
                 }
               />
             </div>
+
+            <PredictionCharts data={sortedTargets.slice(1)} />
           </div>
         </div>
       </div>

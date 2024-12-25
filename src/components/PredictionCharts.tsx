@@ -11,17 +11,25 @@ import {
   Line,
 } from "recharts"
 import { Milestone } from "../types"
+import { CRTTerminal } from "./CRTTerminal"
 
 interface PredictionChartsProps {
   data: Milestone[]
 }
 
 export const PredictionCharts = ({ data }: PredictionChartsProps) => {
+  const formattedData = data.map((milestone) => ({
+    ...milestone,
+    profit: milestone.profit.toFixed(2),
+  }))
+
+  const profitSum = data.reduce((acc, milestone) => acc + milestone.profit, 0)
+
   return (
     <div className="w-1/2 space-y-8">
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
+          <BarChart data={formattedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="name" stroke="#9CA3AF" />
             <YAxis stroke="#9CA3AF" />
@@ -33,16 +41,16 @@ export const PredictionCharts = ({ data }: PredictionChartsProps) => {
               }}
             />
             <Legend />
-            <Bar
-              dataKey="portfolioValue"
-              fill="#34D399"
-              name="Portfolio Value ($)"
-            />
+            <Bar dataKey="profit" fill="#34D399" name="Holdings ($)" />
           </BarChart>
         </ResponsiveContainer>
+
+        <div className="flex justify-center mt-2">
+          <CRTTerminal>{`Total profit: $${profitSum.toFixed(2)}`}</CRTTerminal>
+        </div>
       </div>
 
-      {/* <div className="h-80">
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -58,13 +66,13 @@ export const PredictionCharts = ({ data }: PredictionChartsProps) => {
             <Legend />
             <Line
               type="monotone"
-              dataKey="holdingPercentage"
+              dataKey="profitPercent"
               stroke="#60A5FA"
               name="Holdings Remaining (%)"
             />
           </LineChart>
         </ResponsiveContainer>
-      </div> */}
+      </div>
     </div>
   )
 }
