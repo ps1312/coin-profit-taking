@@ -6,6 +6,7 @@ interface SidebarProps {
   onAddPrediction: () => void
   onRemovePrediction: (id: string) => void
   onSelectPrediction: (id: string) => void
+  onPredictionNameUpdated: (newPredictions: CoinPrediction[]) => void
 }
 
 export const Sidebar = ({
@@ -14,7 +15,19 @@ export const Sidebar = ({
   onAddPrediction,
   onRemovePrediction,
   onSelectPrediction,
+  onPredictionNameUpdated,
 }: SidebarProps) => {
+  const updatePredictionName = (id: string, name: string) => {
+    const updatedPredictions = predictions.map((prediction) => {
+      if (prediction.id === id) {
+        return { ...prediction, name }
+      }
+      return prediction
+    })
+
+    onPredictionNameUpdated(updatedPredictions)
+  }
+
   return (
     <div className="w-64 bg-gray-800 ml-2 p-4 rounded border border-gray-700 absolute left-0">
       <div className="flex justify-between items-center mb-4">
@@ -38,7 +51,17 @@ export const Sidebar = ({
             }`}
             onClick={() => onSelectPrediction(prediction.id)}
           >
-            <span>{prediction.name}</span>
+            <input
+              name={prediction.id}
+              className="w-full"
+              type="text"
+              defaultValue={prediction.name}
+              onChange={(e) =>
+                updatePredictionName(prediction.id, e.target.value)
+              }
+            />
+
+            {/* <span>{prediction.name}</span> */}
             {predictions.length > 1 && (
               <button
                 onClick={(e) => {

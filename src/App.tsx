@@ -63,6 +63,7 @@ const App = () => {
   }
 
   const handleAddTarget = (e: React.FormEvent) => {
+    console.log("askdmasldjk")
     e.preventDefault()
 
     const previousMilestone =
@@ -80,11 +81,14 @@ const App = () => {
     }
 
     const newPredictions = [...predictions]
-    newPredictions[predictions.length - 1] = {
+    const index = newPredictions.findIndex((p) => p.id === activePredictionId)
+
+    newPredictions[index] = {
       ...prediction,
       coinData: coinDataForm,
       milestones: [...sortedTargets, newMilestone],
     }
+
     setPredictions(newPredictions)
   }
 
@@ -118,7 +122,10 @@ const App = () => {
     updateMilestones(newMilestones)
   }
 
-  console.log(prediction)
+  const handleUpdatePredictionName = (newPredictions: CoinPrediction[]) => {
+    setPredictions(newPredictions)
+    localStorage.setItem("predictions", JSON.stringify(newPredictions))
+  }
 
   return (
     <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
@@ -129,6 +136,7 @@ const App = () => {
           onAddPrediction={handleAddPrediction}
           onRemovePrediction={handleRemovePrediction}
           onSelectPrediction={setActivePredictionId}
+          onPredictionNameUpdated={handleUpdatePredictionName}
         />
 
         <div className="max-w-3xl mx-auto flex-1">
