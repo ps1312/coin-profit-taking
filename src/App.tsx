@@ -2,73 +2,33 @@ import { useEffect, useState } from "react"
 import { PredictionCharts } from "./components/PredictionCharts"
 import { MilestoneList } from "./components/MilestoneList"
 import { AddTargetForm } from "./components/AddTargetForm"
-import { CoinPrediction, Milestone } from "./types"
+import { CoinDataFormFields, CoinPrediction, Milestone } from "./types"
 import { Sidebar } from "./components/Sidebar"
 import { CoinDataForm } from "./components/CoinDataForm"
-
-export interface CoinDataFormFields {
-  holdings: number
-  marketCap: number
-}
+import { getStoredPredictions } from "./services"
 
 const App = () => {
-  const [predictions, setPredictions] = useState<CoinPrediction[]>([
-    {
-      id: "1",
-      name: "Prediction 1",
-      coinData: { price: "", marketCap: "" },
-      holdingsData: { total: "", avgPrice: "" },
-      customTargets: [],
-    },
-  ])
-
   const [activePredictionId, setActivePredictionId] = useState("1")
 
-  const getStoredCoinDataForm = () => {
-    const initialCoinDataForm = {
-      holdings: 0,
-      marketCap: 0,
-    }
+  const [newTarget, setNewTarget] = useState({ marketCap: 0, profitPercent: 0 })
 
-    const storedCoinDataForm = localStorage.getItem("coinDataForm")
-    return storedCoinDataForm
-      ? JSON.parse(storedCoinDataForm)
-      : initialCoinDataForm
-  }
-
-  const [coinDataForm, setCoinDataForm] = useState<CoinDataFormFields>(
-    getStoredCoinDataForm()
+  const [predictions, setPredictions] = useState<CoinPrediction[]>(
+    getStoredPredictions()
   )
 
-  const [newTarget, setNewTarget] = useState({
-    marketCap: 0,
-    profitPercent: 0,
-  })
+  const prediction = predictions.find((p) => p.id === activePredictionId)!
 
-  const getStoredMilestones = () => {
-    const initialMilestone = [
-      {
-        multiplier: 1,
-        holdings: 0,
-        profit: 0,
-        profitPercent: 0,
-        marketCap: 0,
-      },
-    ]
-    const storedMilestones = localStorage.getItem("milestones")
-    return storedMilestones ? JSON.parse(storedMilestones) : initialMilestone
-  }
+  const [coinDataForm, setCoinDataForm] = useState<CoinDataFormFields>(
+    prediction.coinData
+  )
 
-  const [milestones, setMilestones] = useState<Milestone[]>(
-    getStoredMilestones()
+  const sortedTargets = prediction.milestones.sort(
+    (a, b) => a.marketCap - b.marketCap
   )
 
   useEffect(() => {
-    localStorage.setItem("coinDataForm", JSON.stringify(coinDataForm))
-    localStorage.setItem("milestones", JSON.stringify(milestones))
-  }, [milestones])
-
-  const sortedTargets = milestones.sort((a, b) => a.marketCap - b.marketCap)
+    localStorage.setItem("predictions", JSON.stringify(predictions))
+  }, [prediction.milestones])
 
   const handleAddPrediction = () => {
     const newId = (predictions.length + 1).toString()
@@ -78,9 +38,16 @@ const App = () => {
       {
         id: newId,
         name: `Prediction ${newId}`,
-        coinData: { price: "", marketCap: "" },
-        holdingsData: { total: "", avgPrice: "" },
-        customTargets: [],
+        coinData: { holdings: 0, marketCap: 0 },
+        milestones: [
+          {
+            multiplier: 1,
+            holdings: 0,
+            profit: 0,
+            profitPercent: 0,
+            marketCap: 0,
+          },
+        ],
       },
     ])
 
@@ -98,12 +65,13 @@ const App = () => {
   const handleAddTarget = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const previousMilestone = milestones[milestones.length - 1]
-    let multiplier = newTarget.marketCap / previousMilestone.marketCap
-    let holdings = previousMilestone.holdings * multiplier
-    let profit = holdings * (newTarget.profitPercent / 100)
+    const previousMilestone =
+      prediction.milestones[prediction.milestones.length - 1]
+    const multiplier = newTarget.marketCap / previousMilestone.marketCap
+    const holdings = previousMilestone.holdings * multiplier
+    const profit = holdings * (newTarget.profitPercent / 100)
 
-    const newMilestone: Milestone = {
+    const newMilestone = {
       multiplier,
       holdings: holdings - profit,
       profit,
@@ -111,14 +79,32 @@ const App = () => {
       marketCap: newTarget.marketCap,
     }
 
-    setMilestones([...milestones, newMilestone])
-    setNewTarget({ marketCap: 0, profitPercent: 0 })
+    const newPredictions = [...predictions]
+    newPredictions[predictions.length - 1] = {
+      ...prediction,
+      coinData: coinDataForm,
+      milestones: [...sortedTargets, newMilestone],
+    }
+    setPredictions(newPredictions)
+  }
+
+  const updateMilestones = (newMilestones: Milestone[]) => {
+    const updatedPredictions = predictions.map((p) =>
+      p.id === prediction.id
+        ? {
+            ...p,
+            milestones: newMilestones,
+          }
+        : p
+    )
+
+    setPredictions(updatedPredictions)
   }
 
   const handleRemoveTarget = (index: number) => {
-    const newMilestones = [...milestones]
+    const newMilestones = [...prediction.milestones]
     newMilestones.splice(index, 1)
-    setMilestones(newMilestones)
+    updateMilestones(newMilestones)
   }
 
   const updateCoinDataForm = (
@@ -127,12 +113,12 @@ const App = () => {
   ) => {
     setCoinDataForm((prev) => ({ ...prev, [name]: value }))
 
-    const newMilestones = [...milestones]
+    const newMilestones = [...prediction.milestones]
     newMilestones[0][name] = value
-    setMilestones(newMilestones)
+    updateMilestones(newMilestones)
   }
 
-  const prediction = predictions.find((p) => p.id === activePredictionId)!
+  console.log(prediction)
 
   return (
     <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
@@ -146,11 +132,7 @@ const App = () => {
         />
 
         <div className="max-w-3xl mx-auto flex-1">
-          <CoinDataForm
-            initialValue={coinDataForm}
-            prediction={prediction}
-            onChange={updateCoinDataForm}
-          />
+          <CoinDataForm prediction={prediction} onChange={updateCoinDataForm} />
 
           <div className="flex gap-8">
             <div className="w-1/2 space-y-2">
@@ -159,7 +141,7 @@ const App = () => {
               </h3>
 
               <MilestoneList
-                initialMarketCap={coinDataForm.marketCap}
+                initialMarketCap={prediction.coinData.marketCap}
                 milestones={sortedTargets}
                 onRemoveTarget={handleRemoveTarget}
               />

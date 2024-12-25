@@ -1,4 +1,7 @@
-import { FormatOptions } from "./types"
+export type FormatOptions = {
+  decimals?: number
+  currency?: boolean
+}
 
 export const formatLargeNumber = (
   num: number,
