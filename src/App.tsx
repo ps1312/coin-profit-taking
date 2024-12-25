@@ -6,7 +6,7 @@ import { CoinPrediction, Milestone } from "./types"
 import { Sidebar } from "./components/Sidebar"
 import { CoinDataForm } from "./components/CoinDataForm"
 
-export interface CoinDataForm {
+export interface CoinDataFormFields {
   holdings: number
   marketCap: number
 }
@@ -24,25 +24,49 @@ const App = () => {
 
   const [activePredictionId, setActivePredictionId] = useState("1")
 
-  const [coinDataForm, setCoinDataForm] = useState<CoinDataForm>({
-    holdings: 0,
-    marketCap: 0,
-  })
+  const getStoredCoinDataForm = () => {
+    const initialCoinDataForm = {
+      holdings: 0,
+      marketCap: 0,
+    }
+
+    const storedCoinDataForm = localStorage.getItem("coinDataForm")
+    return storedCoinDataForm
+      ? JSON.parse(storedCoinDataForm)
+      : initialCoinDataForm
+  }
+
+  const [coinDataForm, setCoinDataForm] = useState<CoinDataFormFields>(
+    getStoredCoinDataForm()
+  )
 
   const [newTarget, setNewTarget] = useState({
     marketCap: 0,
     profitPercent: 0,
   })
 
-  const [milestones, setCustomTargets] = useState<Milestone[]>([
-    {
-      multiplier: 1,
-      holdings: 0,
-      profit: 0,
-      profitPercent: 0,
-      marketCap: newTarget.marketCap,
-    },
-  ])
+  const getStoredMilestones = () => {
+    const initialMilestone = [
+      {
+        multiplier: 1,
+        holdings: 0,
+        profit: 0,
+        profitPercent: 0,
+        marketCap: 0,
+      },
+    ]
+    const storedMilestones = localStorage.getItem("milestones")
+    return storedMilestones ? JSON.parse(storedMilestones) : initialMilestone
+  }
+
+  const [milestones, setMilestones] = useState<Milestone[]>(
+    getStoredMilestones()
+  )
+
+  useEffect(() => {
+    localStorage.setItem("coinDataForm", JSON.stringify(coinDataForm))
+    localStorage.setItem("milestones", JSON.stringify(milestones))
+  }, [milestones])
 
   useEffect(() => {
     const updatedMilestones = milestones.map((target) => {
@@ -58,7 +82,7 @@ const App = () => {
       }
     })
 
-    setCustomTargets(updatedMilestones)
+    // setMilestones(updatedMilestones)
   }, [coinDataForm])
 
   const sortedTargets = milestones.sort((a, b) => a.marketCap - b.marketCap)
@@ -88,13 +112,10 @@ const App = () => {
     }
   }
 
-  console.log(milestones)
-
   const handleAddTarget = (e: React.FormEvent) => {
     e.preventDefault()
 
     const previousMilestone = milestones[milestones.length - 1]
-
     let multiplier = newTarget.marketCap / previousMilestone.marketCap
     let holdings = previousMilestone.holdings * multiplier
     let profit = holdings * (newTarget.profitPercent / 100)
@@ -107,13 +128,13 @@ const App = () => {
       marketCap: newTarget.marketCap,
     }
 
-    setCustomTargets([...milestones, newMilestone])
+    setMilestones([...milestones, newMilestone])
   }
 
-  const handleRemoveTarget = (marketCap: number) => {
-    setCustomTargets(
-      milestones.filter((target) => target.marketCap !== marketCap)
-    )
+  const handleRemoveTarget = (index: number) => {
+    const newMilestones = [...milestones]
+    newMilestones.splice(index, 1)
+    setMilestones(newMilestones)
   }
 
   const updateCoinDataForm = (
@@ -124,7 +145,7 @@ const App = () => {
 
     const newMilestones = [...milestones]
     newMilestones[0][name] = value
-    setCustomTargets(newMilestones)
+    setMilestones(newMilestones)
   }
 
   const prediction = predictions.find((p) => p.id === activePredictionId)!
@@ -141,7 +162,11 @@ const App = () => {
         />
 
         <div className="max-w-3xl mx-auto flex-1">
-          <CoinDataForm prediction={prediction} onChange={updateCoinDataForm} />
+          <CoinDataForm
+            initialValue={coinDataForm}
+            prediction={prediction}
+            onChange={updateCoinDataForm}
+          />
 
           <div className="flex gap-8">
             <PredictionCharts data={sortedTargets} />
@@ -152,7 +177,6 @@ const App = () => {
               </h3>
 
               <MilestoneList
-                coinData={coinDataForm}
                 milestones={sortedTargets}
                 onRemoveTarget={handleRemoveTarget}
               />

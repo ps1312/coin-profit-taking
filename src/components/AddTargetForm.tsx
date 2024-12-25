@@ -41,6 +41,7 @@ export const AddTargetForm = ({
           </label>
 
           <input
+            autoComplete="off"
             name="targetMarketCap"
             type="text"
             value={addTargetForm.targetMarketCap}
@@ -57,7 +58,7 @@ export const AddTargetForm = ({
           <input
             type="number"
             step="1"
-            className="mt-1 block w-48 rounded-md border border-gray-700 bg-gray-700 p-2 text-gray-100"
+            className="mt-1 block w-48 rounded-md border border-gray-300 bg-gray-800 p-2 text-gray-100"
             placeholder="[0, 100]"
             min={0}
             max={100}

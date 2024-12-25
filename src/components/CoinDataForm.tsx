@@ -1,16 +1,22 @@
 import { useState } from "react"
 import { CoinPrediction } from "../types"
 import { convertToFloat, formatStringToValue } from "../utils"
+import { CoinDataFormFields } from "../App"
 
 interface PredictionFormProps {
+  initialValue: CoinDataFormFields
   prediction: CoinPrediction
   onChange: (name: "holdings" | "marketCap", value: number) => void
 }
 
-export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
+export const CoinDataForm = ({
+  initialValue,
+  prediction,
+  onChange,
+}: PredictionFormProps) => {
   const [predictionForm, setPredictionForm] = useState({
-    holdings: "",
-    marketCap: "",
+    holdings: initialValue.holdings ? `$ ${initialValue.holdings}` : "",
+    marketCap: initialValue.marketCap ? `$ ${initialValue.marketCap}` : "",
   })
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +43,7 @@ export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
           </label>
 
           <input
+            autoComplete="off"
             name="holdings"
             type="text"
             value={predictionForm.holdings}
@@ -52,6 +59,7 @@ export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
           </label>
 
           <input
+            autoComplete="off"
             name="marketCap"
             type="text"
             value={predictionForm.marketCap}
