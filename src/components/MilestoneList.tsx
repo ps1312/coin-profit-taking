@@ -54,8 +54,7 @@ export const MilestoneList = ({
               {formatLargeNumber(milestone.marketCap * multiplier)}
             </span>{" "}
             Market Cap
-            {index > 0 &&
-              " (" + (milestone.marketCap / initialMarketCap).toFixed(2) + "x)"}
+            {index > 0 && " (" + milestone.multiplier.toFixed(2) + "x)"}
           </p>
 
           <p className="text-gray-300">
