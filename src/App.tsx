@@ -69,20 +69,24 @@ const App = () => {
   }, [milestones])
 
   useEffect(() => {
-    const updatedMilestones = milestones.map((target) => {
-      const multiplier = target.marketCap / coinDataForm.marketCap
-      const holdings = coinDataForm.holdings * multiplier
-      const profit = holdings * (newTarget.profitPercent / 100)
+    // ask if its ok to reset the milestones state
+    if (milestones.length > 1) {
+      const reset = window.confirm(
+        "Changing the coin data will reset the profit-taking strategy. Do you want to proceed?"
+      )
 
-      return {
-        ...target,
-        multiplier,
-        holdings,
-        profit,
+      if (reset) {
+        setMilestones([
+          {
+            multiplier: 1,
+            holdings: coinDataForm.holdings,
+            profit: 0,
+            profitPercent: 0,
+            marketCap: coinDataForm.marketCap,
+          },
+        ])
       }
-    })
-
-    // setMilestones(updatedMilestones)
+    }
   }, [coinDataForm])
 
   const sortedTargets = milestones.sort((a, b) => a.marketCap - b.marketCap)
