@@ -63,7 +63,6 @@ const App = () => {
   }
 
   const handleAddTarget = (e: React.FormEvent) => {
-    console.log("askdmasldjk")
     e.preventDefault()
 
     const previousMilestone =
