@@ -7,6 +7,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from "recharts"
 import { Milestone } from "../types"
 import { CRTTerminal } from "./CRTTerminal"
@@ -27,7 +29,7 @@ export const PredictionCharts = ({ data }: PredictionChartsProps) => {
     <div className="w-1/2 space-y-8">
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={formattedData}>
+          {/* <BarChart data={formattedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="name" stroke="#9CA3AF" />
             <YAxis stroke="#9CA3AF" />
@@ -40,7 +42,27 @@ export const PredictionCharts = ({ data }: PredictionChartsProps) => {
             />
             <Legend />
             <Bar dataKey="profit" fill="#34D399" name="Profit" />
-          </BarChart>
+          </BarChart> */}
+
+          <LineChart data={formattedData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis dataKey="name" stroke="#9CA3AF" />
+            <YAxis stroke="#9CA3AF" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#1F2937",
+                border: "1px solid #374151",
+                color: "#F3F4F6",
+              }}
+            />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="profit"
+              stroke="#34D399"
+              name="Profit"
+            />
+          </LineChart>
         </ResponsiveContainer>
 
         <div className="flex justify-center mt-2">
