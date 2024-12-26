@@ -13,7 +13,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical, Plus, Trash } from "lucide-react"
+import {
+  Clipboard,
+  ClipboardPaste,
+  GripVertical,
+  Plus,
+  Trash,
+} from "lucide-react"
 
 interface SidebarProps {
   predictions: CoinPrediction[]
@@ -76,7 +82,7 @@ const SortableItem = ({
           }}
           className="p-1"
         >
-          <Trash className="ml-2 w-4 h-4" />
+          <Trash className="ml-2 w-4 h-4 hover:text-red-500" />
         </button>
       </div>
     </div>
@@ -107,13 +113,19 @@ export const Sidebar = ({
     <div className="w-64 bg-gray-800 ml-2 p-4 rounded border border-gray-700 absolute left-0">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Predictions</h2>
-        <button
-          onClick={onAddPrediction}
-          className="p-1 hover:text-blue-400"
-          title="Add Prediction"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
+        <div className="flex justify-center items-center gap-2">
+          <button className="p-1 hover:text-blue-400" title="Copy Prediction">
+            <Clipboard className="w-4 h-4 hover:text-blue-400" />
+          </button>
+
+          <button
+            onClick={onAddPrediction}
+            className="p-1 hover:text-blue-400"
+            title="Add Prediction"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
       </div>
       <DndContext
         sensors={sensors}
