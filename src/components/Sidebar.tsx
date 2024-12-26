@@ -13,6 +13,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { GripVertical, Plus, Trash } from "lucide-react"
 
 interface SidebarProps {
   predictions: CoinPrediction[]
@@ -48,29 +49,36 @@ const SortableItem = ({
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className={`flex justify-between items-center p-2 rounded cursor-pointer ${
+      className={`flex items-center p-2 rounded ${
         isActive ? "bg-blue-600" : "hover:bg-gray-700"
       }`}
       onClick={onSelect}
     >
-      <input
-        name={prediction.id}
-        className="w-full bg-gray-900"
-        type="text"
-        defaultValue={prediction.name}
-        onChange={(e) => onNameUpdate(e.target.value)}
-      />
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          onRemove()
-        }}
-        className="p-1"
-      >
-        delete
-      </button>
+      <div className="cursor-grab" {...attributes} {...listeners}>
+        <GripVertical size={16} />
+      </div>
+      <div className="flex-1 flex justify-between items-center ml-2">
+        <input
+          name={prediction.id}
+          className="w-full bg-gray-900"
+          type="text"
+          defaultValue={prediction.name}
+          onChange={(e) => onNameUpdate(e.target.value)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onSelect()
+          }}
+        />
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onRemove()
+          }}
+          className="p-1"
+        >
+          <Trash className="ml-2 w-4 h-4" />
+        </button>
+      </div>
     </div>
   )
 }
@@ -104,7 +112,7 @@ export const Sidebar = ({
           className="p-1 hover:text-blue-400"
           title="Add Prediction"
         >
-          Add
+          <Plus className="w-4 h-4" />
         </button>
       </div>
       <DndContext
