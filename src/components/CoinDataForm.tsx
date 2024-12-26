@@ -9,13 +9,10 @@ interface PredictionFormProps {
 
 export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
   const formattedPredictionForm = () => {
+    const coinData = prediction.milestones[0]
     return {
-      holdings: prediction.coinData.holdings
-        ? `$ ${prediction.coinData.holdings}`
-        : "",
-      marketCap: prediction.coinData.marketCap
-        ? `$ ${prediction.coinData.marketCap}`
-        : "",
+      holdings: `$ ${formatStringToValue(`${coinData.holdings}`)}`,
+      marketCap: `$ ${formatStringToValue(`${coinData.marketCap}`)}`,
     }
   }
 

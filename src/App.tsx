@@ -28,7 +28,7 @@ const App = () => {
 
   useEffect(() => {
     localStorage.setItem("predictions", JSON.stringify(predictions))
-  }, [prediction.milestones])
+  }, [prediction, predictions])
 
   const handleAddPrediction = () => {
     const newId = (predictions.length + 1).toString()
@@ -148,7 +148,6 @@ const App = () => {
               </h3>
 
               <MilestoneList
-                initialMarketCap={prediction.coinData.marketCap}
                 milestones={sortedTargets}
                 onRemoveTarget={handleRemoveTarget}
               />

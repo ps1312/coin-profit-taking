@@ -3,13 +3,11 @@ import { Milestone } from "../types"
 import { formatLargeNumber } from "../utils"
 
 interface MilestoneListProps {
-  initialMarketCap: number
   milestones: Milestone[]
   onRemoveTarget: (index: number) => void
 }
 
 export const MilestoneList = ({
-  initialMarketCap,
   milestones,
   onRemoveTarget,
 }: MilestoneListProps) => {

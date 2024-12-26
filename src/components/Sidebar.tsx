@@ -53,7 +53,7 @@ export const Sidebar = ({
           >
             <input
               name={prediction.id}
-              className="w-full"
+              className="w-full bg-gray-900"
               type="text"
               defaultValue={prediction.name}
               onChange={(e) =>
@@ -61,14 +61,13 @@ export const Sidebar = ({
               }
             />
 
-            {/* <span>{prediction.name}</span> */}
             {predictions.length > 1 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   onRemovePrediction(prediction.id)
                 }}
-                className="p-1 hover:text-red-400"
+                className="p-1"
               >
                 delete
               </button>
