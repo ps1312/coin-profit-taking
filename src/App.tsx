@@ -121,7 +121,7 @@ const App = () => {
     updateMilestones(newMilestones)
   }
 
-  const handleUpdatePredictionName = (newPredictions: CoinPrediction[]) => {
+  const onUpdatePredictions = (newPredictions: CoinPrediction[]) => {
     setPredictions(newPredictions)
     localStorage.setItem("predictions", JSON.stringify(newPredictions))
   }
@@ -135,7 +135,7 @@ const App = () => {
           onAddPrediction={handleAddPrediction}
           onRemovePrediction={handleRemovePrediction}
           onSelectPrediction={setActivePredictionId}
-          onPredictionNameUpdated={handleUpdatePredictionName}
+          onUpdatePredictions={onUpdatePredictions}
         />
 
         <div className="max-w-3xl mx-auto flex-1">

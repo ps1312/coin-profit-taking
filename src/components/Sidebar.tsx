@@ -1,4 +1,18 @@
 import { CoinPrediction } from "../types"
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 interface SidebarProps {
   predictions: CoinPrediction[]
@@ -6,7 +20,59 @@ interface SidebarProps {
   onAddPrediction: () => void
   onRemovePrediction: (id: string) => void
   onSelectPrediction: (id: string) => void
-  onPredictionNameUpdated: (newPredictions: CoinPrediction[]) => void
+  onUpdatePredictions: (newPredictions: CoinPrediction[]) => void
+}
+
+const SortableItem = ({
+  prediction,
+  isActive,
+  onRemove,
+  onSelect,
+  onNameUpdate,
+}: {
+  prediction: CoinPrediction
+  isActive: boolean
+  onRemove: () => void
+  onSelect: () => void
+  onNameUpdate: (name: string) => void
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: prediction.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`flex justify-between items-center p-2 rounded cursor-pointer ${
+        isActive ? "bg-blue-600" : "hover:bg-gray-700"
+      }`}
+      onClick={onSelect}
+    >
+      <input
+        name={prediction.id}
+        className="w-full bg-gray-900"
+        type="text"
+        defaultValue={prediction.name}
+        onChange={(e) => onNameUpdate(e.target.value)}
+      />
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          onRemove()
+        }}
+        className="p-1"
+      >
+        delete
+      </button>
+    </div>
+  )
 }
 
 export const Sidebar = ({
@@ -15,17 +81,18 @@ export const Sidebar = ({
   onAddPrediction,
   onRemovePrediction,
   onSelectPrediction,
-  onPredictionNameUpdated,
+  onUpdatePredictions,
 }: SidebarProps) => {
-  const updatePredictionName = (id: string, name: string) => {
-    const updatedPredictions = predictions.map((prediction) => {
-      if (prediction.id === id) {
-        return { ...prediction, name }
-      }
-      return prediction
-    })
+  const sensors = useSensors(useSensor(PointerSensor))
 
-    onPredictionNameUpdated(updatedPredictions)
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const oldIndex = predictions.findIndex((p) => p.id === active.id)
+    const newIndex = predictions.findIndex((p) => p.id === over.id)
+
+    onUpdatePredictions(arrayMove(predictions, oldIndex, newIndex))
   }
 
   return (
@@ -40,41 +107,37 @@ export const Sidebar = ({
           Add
         </button>
       </div>
-      <div className="space-y-2">
-        {predictions.map((prediction) => (
-          <div
-            key={prediction.id}
-            className={`flex justify-between items-center p-2 rounded cursor-pointer ${
-              prediction.id === activePredictionId
-                ? "bg-blue-600"
-                : "hover:bg-gray-700"
-            }`}
-            onClick={() => onSelectPrediction(prediction.id)}
-          >
-            <input
-              name={prediction.id}
-              className="w-full bg-gray-900"
-              type="text"
-              defaultValue={prediction.name}
-              onChange={(e) =>
-                updatePredictionName(prediction.id, e.target.value)
-              }
-            />
-
-            {predictions.length > 1 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onRemovePrediction(prediction.id)
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={predictions.map((p) => p.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-2">
+            {predictions.map((prediction) => (
+              <SortableItem
+                key={prediction.id}
+                prediction={prediction}
+                isActive={prediction.id === activePredictionId}
+                onRemove={() => onRemovePrediction(prediction.id)}
+                onSelect={() => onSelectPrediction(prediction.id)}
+                onNameUpdate={(name) => {
+                  const updatedPredictions = predictions.map((p) => {
+                    if (p.id === prediction.id) {
+                      return { ...p, name }
+                    }
+                    return p
+                  })
+                  onUpdatePredictions(updatedPredictions)
                 }}
-                className="p-1"
-              >
-                delete
-              </button>
-            )}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+        </SortableContext>
+      </DndContext>
     </div>
   )
 }
