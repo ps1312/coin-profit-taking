@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { PredictionCharts } from "./components/PredictionCharts"
 import { MilestoneList } from "./components/MilestoneList"
 import { AddTargetForm } from "./components/AddTargetForm"
@@ -6,9 +6,10 @@ import { CoinDataFormFields, CoinPrediction, Milestone } from "./types"
 import { Sidebar } from "./components/Sidebar"
 import { CoinDataForm } from "./components/CoinDataForm"
 import { getStoredPredictions } from "./services"
+import { PredictionsContext } from "./PredictionsContext"
 
 const App = () => {
-  const [activePredictionId, setActivePredictionId] = useState("1")
+  const { activePredictionId, setActivePredictionId } = useContext(PredictionsContext)
 
   const [newTarget, setNewTarget] = useState({ marketCap: 0, profitPercent: 0 })
 
@@ -95,9 +96,9 @@ const App = () => {
     const updatedPredictions = predictions.map((p) =>
       p.id === prediction.id
         ? {
-            ...p,
-            milestones: newMilestones,
-          }
+          ...p,
+          milestones: newMilestones,
+        }
         : p
     )
 
