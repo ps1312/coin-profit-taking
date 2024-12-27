@@ -61,7 +61,7 @@ const App = () => {
         <Sidebar />
 
         <div className="max-w-3xl mx-auto flex-1">
-          <CoinDataForm prediction={prediction} onChange={updateCoinDataForm} />
+          <CoinDataForm />
 
           <div className="flex gap-8">
             <div className="w-1/2 space-y-2">

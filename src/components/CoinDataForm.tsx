@@ -1,13 +1,11 @@
+import { useContext } from "react"
 import { useEffect, useState } from "react"
-import { CoinPrediction } from "../types"
 import { convertToFloat, formatStringToValue } from "../utils"
+import { PredictionsContext } from "../PredictionsContext"
 
-interface PredictionFormProps {
-  prediction: CoinPrediction
-  onChange: (name: "holdings" | "marketCap", value: number) => void
-}
+export const CoinDataForm = () => {
+  const { prediction, updateCoinDataForm } = useContext(PredictionsContext)
 
-export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
   const formattedPredictionForm = () => {
     const coinData = prediction.milestones[0]
     return {
@@ -27,7 +25,7 @@ export const CoinDataForm = ({ prediction, onChange }: PredictionFormProps) => {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name !== "holdings" && e.target.name !== "marketCap") return
 
-    onChange(e.target.name, convertToFloat(e.target.value))
+    updateCoinDataForm(e.target.name, convertToFloat(e.target.value))
 
     setPredictionForm((prev) => ({
       ...prev,
