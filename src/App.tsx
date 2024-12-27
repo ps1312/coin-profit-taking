@@ -13,8 +13,6 @@ const App = () => {
     activePredictionId,
     predictions,
     coinDataForm,
-    updateCoinDataForm,
-    updateMilestones,
     setPredictions,
   } = useContext(PredictionsContext)
 
@@ -49,12 +47,6 @@ const App = () => {
     setPredictions(newPredictions)
   }
 
-  const handleRemoveTarget = (index: number) => {
-    const newMilestones = [...prediction.milestones]
-    newMilestones.splice(index, 1)
-    updateMilestones(newMilestones)
-  }
-
   return (
     <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
       <div className="flex">
@@ -69,10 +61,7 @@ const App = () => {
                 Profit-Taking Strategy:
               </h3>
 
-              <MilestoneList
-                milestones={sortedTargets}
-                onRemoveTarget={handleRemoveTarget}
-              />
+              <MilestoneList />
 
               <AddTargetForm
                 onSubmit={handleAddTarget}

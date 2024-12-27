@@ -1,3 +1,5 @@
+import { useContext } from "react"
+import { Clipboard, ClipboardPaste, Plus } from "lucide-react"
 import {
   DndContext,
   closestCenter,
@@ -10,10 +12,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Clipboard, ClipboardPaste, Plus } from "lucide-react"
 import SortableItem from "./SortableItem"
 import { PredictionsContext } from "../../PredictionsContext"
-import { useContext } from "react"
 
 export const Sidebar = () => {
   const { predictions, setPredictions, handleAddPrediction } =
@@ -89,15 +89,6 @@ export const Sidebar = () => {
                 key={prediction.id}
                 showTrash={predictions.length > 1}
                 prediction={prediction}
-                onNameUpdate={(name) => {
-                  const updatedPredictions = predictions.map((p) => {
-                    if (p.id === prediction.id) {
-                      return { ...p, name }
-                    }
-                    return p
-                  })
-                  setPredictions(updatedPredictions)
-                }}
               />
             ))}
           </div>

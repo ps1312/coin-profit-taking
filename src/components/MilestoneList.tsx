@@ -1,16 +1,9 @@
-import { useState } from "react"
-import { Milestone } from "../types"
+import { useContext, useState } from "react"
 import { formatLargeNumber } from "../utils"
+import { PredictionsContext } from "../PredictionsContext"
 
-interface MilestoneListProps {
-  milestones: Milestone[]
-  onRemoveTarget: (index: number) => void
-}
-
-export const MilestoneList = ({
-  milestones,
-  onRemoveTarget,
-}: MilestoneListProps) => {
+export const MilestoneList = () => {
+  const { prediction, handleRemoveTarget } = useContext(PredictionsContext)
   const [showInReais, setShowInReais] = useState(false)
 
   const multiplier = showInReais ? 6.1 : 1
@@ -40,7 +33,7 @@ export const MilestoneList = ({
         <span className="text-sm text-gray-300">Show in R$</span>
       </label>
 
-      {milestones.map((milestone, index) => (
+      {prediction.milestones.map((milestone, index) => (
         <div
           key={index}
           className="p-2 border border-gray-700 rounded bg-gray-800"
@@ -77,7 +70,7 @@ export const MilestoneList = ({
           {index > 0 && (
             <div className="flex justify-end">
               <button
-                onClick={() => onRemoveTarget(index)}
+                onClick={() => handleRemoveTarget(index)}
                 className="text-red-400 hover:text-red-300"
               >
                 Remove

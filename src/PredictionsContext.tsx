@@ -14,6 +14,8 @@ interface PredictionsContextType {
 
   handleRemovePrediction: (id: string) => void
 
+  handleRemoveTarget: (index: number) => void
+
   handleAddPrediction: () => void
   updateMilestones: (newMilestones: Milestone[]) => void
   updateCoinDataForm: (name: "holdings" | "marketCap", value: number) => void
@@ -29,6 +31,7 @@ export const PredictionsContext = createContext<PredictionsContextType>({
   predictions: [],
   setPredictions: () => {},
   handleRemovePrediction: () => {},
+  handleRemoveTarget: () => {},
   handleAddPrediction: () => {},
   updateMilestones: () => {},
   updateCoinDataForm: () => {},
@@ -114,6 +117,12 @@ export const PredictionsProvider = ({
     updateMilestones(newMilestones)
   }
 
+  const handleRemoveTarget = (index: number) => {
+    const newMilestones = [...prediction.milestones]
+    newMilestones.splice(index, 1)
+    updateMilestones(newMilestones)
+  }
+
   return (
     <PredictionsContext.Provider
       value={{
@@ -129,6 +138,7 @@ export const PredictionsProvider = ({
         updateCoinDataForm,
         sortedTargets,
         prediction,
+        handleRemoveTarget,
       }}
     >
       {children}

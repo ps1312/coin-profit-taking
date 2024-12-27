@@ -1,7 +1,6 @@
 import { useContext } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-
 import { GripVertical, Trash } from "lucide-react"
 import { CoinPrediction } from "../../types"
 import { PredictionsContext } from "../../PredictionsContext"
@@ -9,14 +8,17 @@ import { PredictionsContext } from "../../PredictionsContext"
 export default function SortableItem({
   showTrash,
   prediction,
-  onNameUpdate,
 }: {
   showTrash: boolean
   prediction: CoinPrediction
-  onNameUpdate: (name: string) => void
 }) {
-  const { activePredictionId, setActivePredictionId, handleRemovePrediction } =
-    useContext(PredictionsContext)
+  const {
+    activePredictionId,
+    setActivePredictionId,
+    handleRemovePrediction,
+    predictions,
+    setPredictions,
+  } = useContext(PredictionsContext)
 
   const isActive = activePredictionId === prediction.id
 
@@ -38,6 +40,16 @@ export default function SortableItem({
     handleRemovePrediction(prediction.id)
   }
 
+  const handleNameUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedPredictions = predictions.map((p) => {
+      if (p.id === prediction.id) {
+        return { ...p, name: e.target.value }
+      }
+      return p
+    })
+    setPredictions(updatedPredictions)
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -56,7 +68,7 @@ export default function SortableItem({
           className="w-full bg-gray-900"
           type="text"
           defaultValue={prediction.name}
-          onChange={(e) => onNameUpdate(e.target.value)}
+          onChange={handleNameUpdate}
           onClick={handleSelect}
         />
         {showTrash && (
