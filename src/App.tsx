@@ -1,65 +1,24 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { PredictionCharts } from "./components/PredictionCharts"
 import { MilestoneList } from "./components/MilestoneList"
 import { AddTargetForm } from "./components/AddTargetForm"
-import { CoinPrediction, Milestone } from "./types"
-import { Sidebar } from "./components/Sidebar"
+import { Sidebar } from "./components/Sidebar/Sidebar"
 import { CoinDataForm } from "./components/CoinDataForm"
 import { PredictionsContext } from "./PredictionsContext"
 
 const App = () => {
   const {
+    prediction,
+    sortedTargets,
     activePredictionId,
-    setActivePredictionId,
-    coinDataForm,
-    setCoinDataForm,
     predictions,
+    coinDataForm,
+    updateCoinDataForm,
+    updateMilestones,
     setPredictions,
   } = useContext(PredictionsContext)
 
   const [newTarget, setNewTarget] = useState({ marketCap: 0, profitPercent: 0 })
-
-  const prediction = predictions.find((p) => p.id === activePredictionId)!
-
-  const sortedTargets = prediction.milestones.sort(
-    (a, b) => a.marketCap - b.marketCap
-  )
-
-  useEffect(() => {
-    localStorage.setItem("predictions", JSON.stringify(predictions))
-  }, [prediction, predictions])
-
-  const handleAddPrediction = () => {
-    const newId = (predictions.length + 1).toString()
-
-    setPredictions([
-      ...predictions,
-      {
-        id: newId,
-        name: `Prediction ${new Date().getTime()}`,
-        coinData: { holdings: 0, marketCap: 0 },
-        milestones: [
-          {
-            multiplier: 1,
-            holdings: 0,
-            profit: 0,
-            profitPercent: 0,
-            marketCap: 0,
-          },
-        ],
-      },
-    ])
-
-    setActivePredictionId(newId)
-  }
-
-  const handleRemovePrediction = (id: string) => {
-    setPredictions(predictions.filter((p) => p.id !== id))
-
-    if (activePredictionId === id) {
-      setActivePredictionId(predictions[0].id)
-    }
-  }
 
   const handleAddTarget = (e: React.FormEvent) => {
     e.preventDefault()
@@ -90,52 +49,16 @@ const App = () => {
     setPredictions(newPredictions)
   }
 
-  const updateMilestones = (newMilestones: Milestone[]) => {
-    const updatedPredictions = predictions.map((p) =>
-      p.id === prediction.id
-        ? {
-            ...p,
-            milestones: newMilestones,
-          }
-        : p
-    )
-
-    setPredictions(updatedPredictions)
-  }
-
   const handleRemoveTarget = (index: number) => {
     const newMilestones = [...prediction.milestones]
     newMilestones.splice(index, 1)
     updateMilestones(newMilestones)
   }
 
-  const updateCoinDataForm = (
-    name: "holdings" | "marketCap",
-    value: number
-  ) => {
-    setCoinDataForm((prev) => ({ ...prev, [name]: value }))
-
-    const newMilestones = [...prediction.milestones]
-    newMilestones[0][name] = value
-    updateMilestones(newMilestones)
-  }
-
-  const onUpdatePredictions = (newPredictions: CoinPrediction[]) => {
-    setPredictions(newPredictions)
-    localStorage.setItem("predictions", JSON.stringify(newPredictions))
-  }
-
   return (
     <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
       <div className="flex">
-        <Sidebar
-          predictions={predictions}
-          activePredictionId={activePredictionId}
-          onAddPrediction={handleAddPrediction}
-          onRemovePrediction={handleRemovePrediction}
-          onSelectPrediction={setActivePredictionId}
-          onUpdatePredictions={onUpdatePredictions}
-        />
+        <Sidebar />
 
         <div className="max-w-3xl mx-auto flex-1">
           <CoinDataForm prediction={prediction} onChange={updateCoinDataForm} />

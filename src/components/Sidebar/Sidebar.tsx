@@ -1,4 +1,3 @@
-import { CoinPrediction } from "../types"
 import {
   DndContext,
   closestCenter,
@@ -9,94 +8,17 @@ import {
 import {
   arrayMove,
   SortableContext,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import {
-  Clipboard,
-  ClipboardPaste,
-  GripVertical,
-  Plus,
-  Trash,
-} from "lucide-react"
+import { Clipboard, ClipboardPaste, Plus } from "lucide-react"
+import SortableItem from "./SortableItem"
+import { PredictionsContext } from "../../PredictionsContext"
+import { useContext } from "react"
 
-interface SidebarProps {
-  predictions: CoinPrediction[]
-  activePredictionId: string
-  onAddPrediction: () => void
-  onRemovePrediction: (id: string) => void
-  onSelectPrediction: (id: string) => void
-  onUpdatePredictions: (newPredictions: CoinPrediction[]) => void
-}
+export const Sidebar = () => {
+  const { predictions, setPredictions, handleAddPrediction } =
+    useContext(PredictionsContext)
 
-const SortableItem = ({
-  prediction,
-  isActive,
-  onRemove,
-  onSelect,
-  onNameUpdate,
-}: {
-  prediction: CoinPrediction
-  isActive: boolean
-  onRemove: () => void
-  onSelect: () => void
-  onNameUpdate: (name: string) => void
-}) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: prediction.id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  }
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex items-center p-2 rounded ${
-        isActive ? "bg-blue-600" : "hover:bg-gray-700"
-      }`}
-      onClick={onSelect}
-    >
-      <div className="cursor-grab" {...attributes} {...listeners}>
-        <GripVertical size={16} />
-      </div>
-      <div className="flex-1 flex justify-between items-center ml-2">
-        <input
-          name={prediction.id}
-          className="w-full bg-gray-900"
-          type="text"
-          defaultValue={prediction.name}
-          onChange={(e) => onNameUpdate(e.target.value)}
-          onClick={(e) => {
-            e.stopPropagation()
-            onSelect()
-          }}
-        />
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onRemove()
-          }}
-          className="p-1"
-        >
-          <Trash className="ml-2 w-4 h-4 hover:text-red-500" />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-export const Sidebar = ({
-  predictions,
-  activePredictionId,
-  onAddPrediction,
-  onRemovePrediction,
-  onSelectPrediction,
-  onUpdatePredictions,
-}: SidebarProps) => {
   const sensors = useSensors(useSensor(PointerSensor))
 
   const handleDragEnd = (event: any) => {
@@ -106,7 +28,7 @@ export const Sidebar = ({
     const oldIndex = predictions.findIndex((p) => p.id === active.id)
     const newIndex = predictions.findIndex((p) => p.id === over.id)
 
-    onUpdatePredictions(arrayMove(predictions, oldIndex, newIndex))
+    setPredictions(arrayMove(predictions, oldIndex, newIndex))
   }
 
   const handleCopyToClipboard = () => {
@@ -117,8 +39,7 @@ export const Sidebar = ({
   const handlePasteFromClipboard = () => {
     navigator.clipboard.readText().then((text) => {
       try {
-        const newPredictions = JSON.parse(text)
-        onUpdatePredictions(newPredictions)
+        setPredictions(JSON.parse(text))
       } catch (error) {
         console.error("Invalid JSON")
       }
@@ -145,7 +66,7 @@ export const Sidebar = ({
           </button>
 
           <button
-            onClick={onAddPrediction}
+            onClick={handleAddPrediction}
             className="p-1 hover:text-blue-400"
             title="Add"
           >
@@ -166,10 +87,8 @@ export const Sidebar = ({
             {predictions.map((prediction) => (
               <SortableItem
                 key={prediction.id}
+                showTrash={predictions.length > 1}
                 prediction={prediction}
-                isActive={prediction.id === activePredictionId}
-                onRemove={() => onRemovePrediction(prediction.id)}
-                onSelect={() => onSelectPrediction(prediction.id)}
                 onNameUpdate={(name) => {
                   const updatedPredictions = predictions.map((p) => {
                     if (p.id === prediction.id) {
@@ -177,7 +96,7 @@ export const Sidebar = ({
                     }
                     return p
                   })
-                  onUpdatePredictions(updatedPredictions)
+                  setPredictions(updatedPredictions)
                 }}
               />
             ))}
