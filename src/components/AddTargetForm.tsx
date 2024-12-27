@@ -1,31 +1,37 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { convertToFloat, formatStringToValue } from "../utils"
+import { PredictionsContext } from "../PredictionsContext"
 
-interface AddTargetFormProps {
-  onSubmit: (e: React.FormEvent) => void
-  onMarketCapChange: (value: number) => void
-  profitPercent: number
-  onProfitPercentChange: (value: number) => void
-}
+export const AddTargetForm = () => {
+  const { newTarget, setNewTarget, handleAddMilestone } =
+    useContext(PredictionsContext)
 
-export const AddTargetForm = ({
-  onSubmit,
-  onMarketCapChange,
-  profitPercent,
-  onProfitPercentChange,
-}: AddTargetFormProps) => {
   const [addTargetForm, setAddTargetForm] = useState({
     targetMarketCap: "",
     profitPercent: "",
   })
 
-  const handleMarketCapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onMarketCapChange(convertToFloat(e.target.value))
-
+  const updateForm = () => {
     setAddTargetForm({
-      ...addTargetForm,
-      targetMarketCap: `$ ${formatStringToValue(e.target.value)}`,
+      targetMarketCap: `$ ${formatStringToValue(
+        newTarget.marketCap.toString()
+      )}`,
+      profitPercent: newTarget.profitPercent.toString(),
     })
+  }
+
+  useEffect(updateForm, [newTarget])
+
+  const handleMarketCapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTarget({ ...newTarget, marketCap: convertToFloat(e.target.value) })
+    updateForm()
+  }
+
+  const handleProfitPercentChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNewTarget({ ...newTarget, profitPercent: parseInt(e.target.value) })
+    updateForm()
   }
 
   return (
@@ -34,7 +40,7 @@ export const AddTargetForm = ({
         Add Profit Target
       </h3>
 
-      <form onSubmit={onSubmit} className="flex flex-wrap gap-4">
+      <form onSubmit={handleAddMilestone} className="flex flex-wrap gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-300">
             Market Cap ($)
@@ -62,8 +68,8 @@ export const AddTargetForm = ({
             placeholder="[0, 100]"
             min={0}
             max={100}
-            value={profitPercent}
-            onChange={(e) => onProfitPercentChange(parseInt(e.target.value))}
+            value={addTargetForm.profitPercent}
+            onChange={handleProfitPercentChange}
           />
         </div>
 
