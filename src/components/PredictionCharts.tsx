@@ -8,20 +8,22 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { Milestone } from "../types"
 import { CRTTerminal } from "./CRTTerminal"
+import { useContext } from "react"
+import { PredictionsContext } from "../PredictionsContext"
 
-interface PredictionChartsProps {
-  data: Milestone[]
-}
+export const PredictionCharts = () => {
+  const { prediction } = useContext(PredictionsContext)
 
-export const PredictionCharts = ({ data }: PredictionChartsProps) => {
-  const formattedData = data.map((milestone) => ({
+  const formattedData = prediction.milestones.map((milestone) => ({
     ...milestone,
     profit: milestone.profit.toFixed(2),
   }))
 
-  const profitSum = data.reduce((acc, milestone) => acc + milestone.profit, 0)
+  const profitSum = prediction.milestones.reduce(
+    (acc, milestone) => acc + milestone.profit,
+    0
+  )
 
   return (
     <div className="w-1/2 space-y-8">

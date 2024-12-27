@@ -1,14 +1,10 @@
-import { useContext } from "react"
 import { PredictionCharts } from "./components/PredictionCharts"
 import { MilestoneList } from "./components/MilestoneList"
 import { AddTargetForm } from "./components/AddTargetForm"
 import { Sidebar } from "./components/Sidebar/Sidebar"
 import { CoinDataForm } from "./components/CoinDataForm"
-import { PredictionsContext } from "./PredictionsContext"
 
 const App = () => {
-  const { sortedTargets } = useContext(PredictionsContext)
-
   return (
     <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
       <div className="flex">
@@ -28,7 +24,7 @@ const App = () => {
               <AddTargetForm />
             </div>
 
-            <PredictionCharts data={sortedTargets.slice(1)} />
+            <PredictionCharts />
           </div>
         </div>
       </div>
