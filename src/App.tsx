@@ -2,26 +2,24 @@ import { useContext, useEffect, useState } from "react"
 import { PredictionCharts } from "./components/PredictionCharts"
 import { MilestoneList } from "./components/MilestoneList"
 import { AddTargetForm } from "./components/AddTargetForm"
-import { CoinDataFormFields, CoinPrediction, Milestone } from "./types"
+import { CoinPrediction, Milestone } from "./types"
 import { Sidebar } from "./components/Sidebar"
 import { CoinDataForm } from "./components/CoinDataForm"
-import { getStoredPredictions } from "./services"
 import { PredictionsContext } from "./PredictionsContext"
 
 const App = () => {
-  const { activePredictionId, setActivePredictionId } = useContext(PredictionsContext)
+  const {
+    activePredictionId,
+    setActivePredictionId,
+    coinDataForm,
+    setCoinDataForm,
+    predictions,
+    setPredictions,
+  } = useContext(PredictionsContext)
 
   const [newTarget, setNewTarget] = useState({ marketCap: 0, profitPercent: 0 })
 
-  const [predictions, setPredictions] = useState<CoinPrediction[]>(
-    getStoredPredictions()
-  )
-
   const prediction = predictions.find((p) => p.id === activePredictionId)!
-
-  const [coinDataForm, setCoinDataForm] = useState<CoinDataFormFields>(
-    prediction.coinData
-  )
 
   const sortedTargets = prediction.milestones.sort(
     (a, b) => a.marketCap - b.marketCap
@@ -38,7 +36,7 @@ const App = () => {
       ...predictions,
       {
         id: newId,
-        name: `Prediction ${newId}`,
+        name: `Prediction ${new Date().getTime()}`,
         coinData: { holdings: 0, marketCap: 0 },
         milestones: [
           {
@@ -96,9 +94,9 @@ const App = () => {
     const updatedPredictions = predictions.map((p) =>
       p.id === prediction.id
         ? {
-          ...p,
-          milestones: newMilestones,
-        }
+            ...p,
+            milestones: newMilestones,
+          }
         : p
     )
 
