@@ -54,7 +54,6 @@ export const PredictionsProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [activePredictionId, setActivePredictionId] = useState("1")
   const [newTarget, setNewTarget] = useState({ marketCap: 0, profitPercent: 0 })
   const [showInReais, setShowInReais] = useState(false)
   const [coinDataForm, setCoinDataForm] = useState<CoinDataFormFields>({
@@ -64,8 +63,12 @@ export const PredictionsProvider = ({
   const [predictions, setPredictions] = useState<CoinPrediction[]>(
     getStoredPredictions()
   )
+  const [activePredictionId, setActivePredictionId] = useState(
+    predictions[0].id
+  )
 
   const prediction = predictions.find((p) => p.id === activePredictionId)!
+
   const sortedTargets = prediction.milestones.sort(
     (a, b) => a.marketCap - b.marketCap
   )
@@ -115,11 +118,9 @@ export const PredictionsProvider = ({
   }
 
   const handleRemovePrediction = (id: string) => {
-    setPredictions(predictions.filter((p) => p.id !== id))
-
-    if (activePredictionId === id) {
-      setActivePredictionId(predictions[0].id)
-    }
+    const newPredictions = predictions.filter((p) => p.id !== id)
+    setPredictions(newPredictions)
+    setActivePredictionId(newPredictions[0].id)
   }
 
   const handleAddMilestone = (e: React.FormEvent) => {
