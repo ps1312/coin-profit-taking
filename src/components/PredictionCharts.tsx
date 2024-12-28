@@ -26,6 +26,8 @@ export const PredictionCharts = () => {
     0
   )
 
+  const profitPerHolding = profitSum / prediction.coinData.holdings
+
   return (
     <div className="w-1/2 space-y-8">
       <div className="h-80">
@@ -48,7 +50,8 @@ export const PredictionCharts = () => {
 
         <div className="flex justify-center mt-2">
           <CRTTerminal>
-            {`Total profit: ${formatCurrency(profitSum, showInReais)}`}
+            {`Total profit: ${formatCurrency(profitSum, showInReais)}`} (
+            {formatCurrency(profitPerHolding, showInReais)} per holding)
           </CRTTerminal>
         </div>
       </div>
