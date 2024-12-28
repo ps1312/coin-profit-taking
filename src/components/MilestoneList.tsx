@@ -1,25 +1,15 @@
-import { useContext, useState } from "react"
-import { formatLargeNumber } from "../utils"
+import { useContext } from "react"
+import {
+  formatCurrency,
+  formatLargeNumber,
+  getCurrencyMultiplier,
+  getCurrencySymbol,
+} from "../utils"
 import { PredictionsContext } from "../PredictionsContext"
 
 export const MilestoneList = () => {
-  const { prediction, handleRemoveTarget } = useContext(PredictionsContext)
-  const [showInReais, setShowInReais] = useState(false)
-
-  const multiplier = showInReais ? 6.1 : 1
-  const currencySymbol = showInReais ? "R$" : "$"
-
-  const formatCurrency = (value: number) => {
-    return (value * multiplier).toLocaleString(
-      showInReais ? "pt-BR" : "en-US",
-      {
-        style: "currency",
-        currency: showInReais ? "BRL" : "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }
-    )
-  }
+  const { prediction, handleRemoveTarget, showInReais, setShowInReais } =
+    useContext(PredictionsContext)
 
   return (
     <div className="space-y-2">
@@ -41,29 +31,32 @@ export const MilestoneList = () => {
           <p className="text-lg font-medium text-gray-300">
             At{" "}
             <span className="underline">
-              {currencySymbol}
-              {formatLargeNumber(milestone.marketCap * multiplier)}
+              {getCurrencySymbol(showInReais)}
+              {formatLargeNumber(
+                milestone.marketCap * getCurrencyMultiplier(showInReais)
+              )}
             </span>{" "}
             Market Cap
             {index > 0 && " (" + milestone.multiplier.toFixed(2) + "x)"}
           </p>
 
           <p className="text-gray-300">
-            Holdings: {formatCurrency(milestone.holdings + milestone.profit)}
+            Holdings:{" "}
+            {formatCurrency(milestone.holdings + milestone.profit, showInReais)}
           </p>
 
           {milestone.profit > 0 && (
             <p className="flex items-center gap-1 text-gray-300">
               Take profits ({milestone.profitPercent}%):{" "}
               <span className="text-green-400 font-medium">
-                {formatCurrency(milestone.profit)} 💰
+                {formatCurrency(milestone.profit, showInReais)} 💰
               </span>
             </p>
           )}
 
           {index > 0 && (
             <p className="text-gray-300">
-              New holdings: {formatCurrency(milestone.holdings)}
+              New holdings: {formatCurrency(milestone.holdings, showInReais)}
             </p>
           )}
 

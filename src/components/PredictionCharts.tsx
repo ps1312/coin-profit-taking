@@ -11,13 +11,14 @@ import {
 import { CRTTerminal } from "./CRTTerminal"
 import { useContext } from "react"
 import { PredictionsContext } from "../PredictionsContext"
+import { formatCurrency, getCurrencyMultiplier } from "../utils"
 
 export const PredictionCharts = () => {
-  const { prediction } = useContext(PredictionsContext)
+  const { prediction, showInReais } = useContext(PredictionsContext)
 
   const formattedData = prediction.milestones.map((milestone) => ({
     ...milestone,
-    profit: milestone.profit.toFixed(2),
+    profit: (milestone.profit * getCurrencyMultiplier(showInReais)).toFixed(2),
   }))
 
   const profitSum = prediction.milestones.reduce(
@@ -46,7 +47,9 @@ export const PredictionCharts = () => {
         </ResponsiveContainer>
 
         <div className="flex justify-center mt-2">
-          <CRTTerminal>{`Total profit: $${profitSum.toFixed(2)}`}</CRTTerminal>
+          <CRTTerminal>
+            {`Total profit: ${formatCurrency(profitSum, showInReais)}`}
+          </CRTTerminal>
         </div>
       </div>
     </div>

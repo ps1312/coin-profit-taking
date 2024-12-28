@@ -60,3 +60,18 @@ export const convertToFloat = (formattedValue: string): number => {
   const withoutCurrency = formattedValue.replace("$", "")
   return parseFloat(withoutCurrency.replace(/,/g, ""))
 }
+
+export const getCurrencyMultiplier = (showInReais: boolean) =>
+  showInReais ? 6.1 : 1
+export const getCurrencySymbol = (showInReais: boolean) =>
+  showInReais ? "R$" : "$"
+
+export const formatCurrency = (value: number, showInReais: boolean) => {
+  const multiplier = getCurrencyMultiplier(showInReais)
+  return (value * multiplier).toLocaleString(showInReais ? "pt-BR" : "en-US", {
+    style: "currency",
+    currency: showInReais ? "BRL" : "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+}

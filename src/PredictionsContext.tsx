@@ -19,6 +19,8 @@ interface PredictionsContextType {
   updateCoinDataForm: (name: "holdings" | "marketCap", value: number) => void
   setNewTarget: (target: { marketCap: number; profitPercent: number }) => void
   handleAddMilestone: (e: React.FormEvent) => void
+  showInReais: boolean
+  setShowInReais: (showInReais: boolean) => void
 }
 
 export const PredictionsContext = createContext<PredictionsContextType>({
@@ -43,6 +45,8 @@ export const PredictionsContext = createContext<PredictionsContextType>({
   updateCoinDataForm: () => {},
   setNewTarget: () => {},
   handleAddMilestone: () => {},
+  showInReais: false,
+  setShowInReais: () => {},
 })
 
 export const PredictionsProvider = ({
@@ -52,6 +56,7 @@ export const PredictionsProvider = ({
 }) => {
   const [activePredictionId, setActivePredictionId] = useState("1")
   const [newTarget, setNewTarget] = useState({ marketCap: 0, profitPercent: 0 })
+  const [showInReais, setShowInReais] = useState(false)
   const [coinDataForm, setCoinDataForm] = useState<CoinDataFormFields>({
     holdings: 0,
     marketCap: 0,
@@ -172,6 +177,8 @@ export const PredictionsProvider = ({
         updateCoinDataForm,
         sortedTargets,
         prediction,
+        showInReais,
+        setShowInReais,
       }}
     >
       {children}

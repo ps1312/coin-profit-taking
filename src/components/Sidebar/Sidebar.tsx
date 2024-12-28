@@ -47,7 +47,7 @@ export const Sidebar = () => {
   }
 
   return (
-    <div className="w-64 bg-gray-800 ml-2 p-4 rounded border border-gray-700 absolute left-0">
+    <div className="w-64 bg-gray-800 ml-2 p-4 rounded border border-gray-700 xl:absolute left-0">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Predictions</h2>
         <div className="flex justify-center items-center gap-2">
