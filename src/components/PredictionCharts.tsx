@@ -51,7 +51,7 @@ export const PredictionCharts = () => {
         <div className="flex justify-center mt-2">
           <CRTTerminal>
             {`Total profit: ${formatCurrency(profitSum, showInReais)}`} (
-            {formatCurrency(profitPerHolding, showInReais)} per holding)
+            {profitPerHolding.toFixed(2)}x)
           </CRTTerminal>
         </div>
       </div>
