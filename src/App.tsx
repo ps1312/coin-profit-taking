@@ -6,11 +6,12 @@ import { CoinDataForm } from "./components/CoinDataForm"
 import { RunesDisplay } from "./components/RunesDisplay"
 
 const App = () => {
-  const isRunesPath = window.location.pathname.includes("/runes")
+  const searchParams = new URLSearchParams(window.location.search)
+  const showRunes = searchParams.get("runes") === "true"
 
   return (
     <div className="py-4 bg-gray-900 text-gray-100 min-h-screen">
-      {isRunesPath ? (
+      {showRunes ? (
         <RunesDisplay />
       ) : (
         <div className="flex">
