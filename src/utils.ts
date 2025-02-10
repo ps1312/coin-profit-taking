@@ -62,7 +62,7 @@ export const convertToFloat = (formattedValue: string): number => {
 }
 
 export const getCurrencyMultiplier = (showInReais: boolean) =>
-  showInReais ? 6.1 : 1
+  showInReais ? 5.8 : 1
 export const getCurrencySymbol = (showInReais: boolean) =>
   showInReais ? "R$" : "$"
 
